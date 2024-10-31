@@ -1,36 +1,45 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import AmisEditor from "./AmisEditor.tsx";
+import {useState} from "react";
+import {SchemaObject} from "amis/lib/Schema";
+import ReactJson from "react-json-view";
+import {Button, Modal} from "antd";
 
 
 function App() {
-  const [count, setCount] = useState(0)
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [currentAMISSchema, setCurrentAMISSchema] = useState<SchemaObject | null>(null);
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    const saveSchema = (schema: SchemaObject) => {
+        setCurrentAMISSchema(schema);
+        setIsModalOpen(false);
+        console.log('已确定', currentAMISSchema);
+    }
+
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleOk = () => {
+        setIsModalOpen(false);
+        console.log('已确定', currentAMISSchema);
+    };
+
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
+
+
+    return (
+        <>
+            <Button type="primary" onClick={showModal}>
+                Open Modal
+            </Button>
+            <Modal open={isModalOpen} onOk={handleOk} onCancel={handleCancel} width={'100%'} footer={null} style={{top: 20}}>
+                <AmisEditor save={saveSchema}/>
+            </Modal>
+            <ReactJson src={currentAMISSchema || {}}/>
+        </>
+    );
 }
 
 export default App
